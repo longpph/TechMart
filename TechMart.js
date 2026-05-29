@@ -2,6 +2,10 @@
  * HỆ THỐNG TÍNH TIỀN TECHMART (LEGACY CODE)
  * LỖI KIẾN TRÚC: Vi phạm nghiêm trọng nguyên lý Single Responsibility (SRP)
  */
+function isCartEmpty(cart) {
+    return !Array.isArray(cart) || cart.length === 0;
+}
+
 function calculateSubtotal(cart){
     let subtotal = 0;
     for (let i = 0; i < cart.length; i++) {
@@ -29,15 +33,25 @@ function printInvoice(subtotal, discount, tax, finalTotal){
     console.log("TỔNG THANH TOÁN: " + finalTotal + " VNĐ");
     console.log("------------------------");
 }
+function processOrder(cart){
+    if (isCartEmpty(cart)){
+        console.log("Giỏ hàng trống. Vui lòng thêm sản phẩm vào giỏ hàng!");
+        return 0;
+    }else{
+        let subtotal = calculateSubtotal(myCart);
+        let discount = calculateDiscount(subtotal, "VIP");
+        let totalAfterDiscount = subtotal - discount;
+        let tax = calculateTax(totalAfterDiscount);
+        let finalTotal = totalAfterDiscount + tax;
+        printInvoice(subtotal, discount, tax, finalTotal)
+    }
+}
 // Dữ liệu chạy thử
 const myCart = [
     { item: "Laptop", price: 15000000, quantity: 1 },
     { item: "Chuột", price: 300000, quantity: 2 }
 ];
-let subtotal = calculateSubtotal(myCart);
-let discount = calculateDiscount(subtotal, "VIP");
-let totalAfterDiscount = subtotal - discount;
-let tax = calculateTax(totalAfterDiscount);
-let finalTotal = totalAfterDiscount + tax;
-printInvoice(subtotal, discount, tax, finalTotal)
+const emptyCart = [];
+processOrder(myCart);
+processOrder(emptyCart);
 
